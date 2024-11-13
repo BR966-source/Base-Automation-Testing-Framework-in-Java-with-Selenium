@@ -1,0 +1,48 @@
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
+public class LoginTest {
+    private WebDriver driver;
+    private LoginPage loginPage;
+    private DriverManager driverManager;
+    private ExtentReports extent;
+    private ExtentTest test;
+
+    @BeforeClass
+    public void setUp() {
+        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("loginTestReport.html");
+        extent = new ExtentReports();
+        extent.attachReporter(htmlReporter);
+
+        driverManager = new DriverManager();
+        driver = driverManager.initializeDriver();
+        loginPage = new LoginPage(driver);
+
+        driver.get("https://www.saucedemo.com/");
+    }
+
+    @Test
+    public void testValidLogin() {
+        test = extent.createTest("Valid Login Test", "Tests valid login functionality");
+
+        loginPage.enterUsername("standard_user");
+        loginPage.enterPassword("secret_sauce");
+        loginPage.clickLogin();
+
+        String currentUrl = driver.getCurrentUrl();
+        test.info("Login successful, redirected to: " + currentUrl);
+        Assert.assertTrue(currentUrl.contains("inventory"));
+        test.pass("Login test passed.");
+    }
+
+    @AfterClass
+    public void tearDown() {
+        driver.quit();
+        extent.flush();
+    }
+}
