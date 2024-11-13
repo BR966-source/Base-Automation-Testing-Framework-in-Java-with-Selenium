@@ -1,0 +1,12 @@
+public class DriverManager {
+    private WebDriver driver;
+
+    public WebDriver initializeDriver() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().window().maximize();
+        return driver;
+    }
+}
+`
